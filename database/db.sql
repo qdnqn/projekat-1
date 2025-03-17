@@ -1,7 +1,7 @@
 -- creating the database
-CREATE DATABASE crudnodejsmysql;
+CREATE DATABASE projekat1;
 
-use crudnodejsmysql;
+use projekat1;
 
 -- creating a table
 CREATE TABLE customer (
@@ -10,9 +10,3 @@ CREATE TABLE customer (
     address VARCHAR(100) NOT NULL,
     phone VARCHAR(15)
 );
-
--- Show all tables
-SHOW TABLES;
-
--- To describe the table
-describe customer;
