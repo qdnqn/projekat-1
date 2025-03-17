@@ -37,8 +37,8 @@ USER=root
 PASSWORD=dummypassword
 ```
 
->>> !IMPORTANT
->>> Note: Adjust your values so that application is working in containerized environment!
+> [!IMPORTANT]
+> Note: Adjust your values so that application is working in containerized environment!
 
 Afterward, in this project run:
 ```cgo
