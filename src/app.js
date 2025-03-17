@@ -7,6 +7,9 @@ const app = express();
 require('dotenv').config();
 
 // To get the database password from the .env file
+const HOST = process.env.DATABASE_HOST;
+const PORT = process.env.DATABASE_PORT;
+const USER = process.env.DATABASE_USER;
 const PASS = process.env.DATABASE_PASSWORD;
 
 // Importing routes
@@ -20,10 +23,10 @@ app.set('views', path.join(__dirname, 'views'));
 // middlewares
 app.use(morgan('dev'));
 app.use(myConnection(mysql, {
-    host: 'localhost',
-    user: 'root',
+    host: HOST,
+    user: USER,
     password: PASS,
-    port: '3306',
+    port: PORT,
     database: 'crudnodejsmysql'
 }, 'single'));
 app.use(express.urlencoded({extended: false}));
