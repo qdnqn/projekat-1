@@ -49,8 +49,17 @@ npm run dev
 ## Testing if working properly for localhost
 
 ```cgo
-curl -X POST http://localhost:3000/api/records -d "name=Student&address=Franjevacka 2&phone=1111111111" 
-curl http://localhost/api/records
+➜  projekat-1 git:(master) ✗ curl -X POST http://localhost:3000/api/records -d "name=Student&address=Franjevacka2&phone=1111111111"
+{"message":"Customer added successfully","id":23,"name":"Student","address":"Franjevacka2","phone":"1111111111"}%                                                                          
+➜  projekat-1 git:(master) ✗ curl http://localhost:3000/api/records                                                                
+{"customers":[{"id":1,"name":"Student","address":"Franjevacka2","phone":"1111111111"}]}                                                                                                      ➜  projekat-1 git:(master) ✗ 
+```
+
+Also UI is located at the root level of domain
+
+```cgo
+# Example if the port is 3000 and you can visit URL in the browser to use UI
+http://localhost:3000/
 ```
 
 ## API Endpoints

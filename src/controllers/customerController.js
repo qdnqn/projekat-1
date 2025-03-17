@@ -2,7 +2,7 @@ const res = require("express/lib/response");
 
 const controller = {};
 
-controller.list = (req, res) => {
+controller.listHTML = (req, res) => {
     req.getConnection((err, conn) => {
         conn.query('SELECT * FROM customer', (err, customers) => {
             if (err) {
@@ -16,16 +16,38 @@ controller.list = (req, res) => {
     });
 };
 
-controller.save = (req, res) => {
-    const data = req.body;
-
+controller.list = (req, res) => {
     req.getConnection((err, conn) => {
-        conn.query('INSERT INTO customer set ?', [data], (err, customer) => {
+        conn.query('SELECT * FROM customer', (err, customers) => {
             if (err) {
-                res.json(err);
+                return res.status(500).json(err);
             }
 
-            res.redirect('/');
+            return res.status(209).json({ customers: customers });
+        });
+    });
+};
+
+controller.save = (req, res) => {
+    const data = req.body
+
+    console.log(req)
+
+    if (!data.name || !data.address || !data.phone) {
+        return res.status(400).json({ error: "All fields are required" });
+    }
+
+    req.getConnection((err, conn) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database connection error', details: err });
+        }
+
+        conn.query('INSERT INTO customer SET ?', [data], (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: 'Database query error', details: err });
+            }
+
+            return res.status(201).json({ message: 'Customer added successfully', id: result.insertId, name: data.name, address: data.address, phone: data.phone });
         });
     });
 };
@@ -39,7 +61,7 @@ controller.delete = (req, res) => {
                 res.json(err);
             }
 
-            res.redirect('/');
+            return res.status(200).json({ message: 'Customer removed successfully', id: id });
         });
     });
 };
@@ -70,7 +92,7 @@ controller.update = (req, res) => {
                 res.json(err);
             }
             
-            res.redirect('/');
+            res.redirect('/api/records');
         });
     });
 };

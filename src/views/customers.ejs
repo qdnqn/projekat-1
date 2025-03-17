@@ -6,7 +6,7 @@
 <div class="container">
 <div class="row mt-5">
     <div class="col-md-7">
-        <table class="table table-bordered table-hover">
+        <table id="customers-table" class="table table-bordered table-hover">
             <thead>
                 <tr>
                     <th>#</th>
@@ -19,14 +19,13 @@
             <tbody>
                 <% if (data) { %>
                     <% for (var i = 0; i < data.length; i++) { %>
-                        <tr>
-                            <td><%= (i + 1) %></td>
+                        <tr id="tr-<%= data[i].id %>">
+                            <td><%= data[i].id %></td>
                             <td><%= data[i].name %></td>
                             <td><%= data[i].address %></td>
                             <td><%= data[i].phone %></td>
                             <td>
-                                <a href="/delete/<%= data[i].id %>" class="btn btn-danger">Delete</a>
-                                <a href="/update/<%= data[i].id %>" class="btn btn-info">Update</a>
+                                <a onclick="deleteItem(<%= data[i].id %>)" class="btn btn-danger">Delete</a>
                             </td>
                         </tr>
                     <% } %>
@@ -37,15 +36,15 @@
     <div class="col-md-5">
         <div class="card">
             <div class="card-body">
-                <form action="/add" method="post">
+                <form id="customerForm">
                     <div class="form-group">
-                        <input type="text" name="name" placeholder="Name" class="form-control" >
+                        <input type="text" id="name" name="name" placeholder="Name" class="form-control" >
                     </div>
                     <div class="form-group">
-                        <input type="text" name="address" placeholder="Address" class="form-control" >
+                        <input type="text" id="address" name="address" placeholder="Address" class="form-control" >
                     </div>
                     <div class="form-group">
-                        <input type="text" name="phone" placeholder="Phone" class="form-control" >
+                        <input type="text" id="phone" name="phone" placeholder="Phone" class="form-control" >
                     </div>
                     <button type="submit" class="btn btn-primary">
                         Save Customer
@@ -56,4 +55,74 @@
     </div>
 </div>
 </div>
+
+<script>
+document.getElementById("customerForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const form = document.getElementById("customerForm");
+    const formData = new FormData(form);
+
+    addItem(formData);
+});
+
+function addItem(data) {
+    fetch("/api/records", {
+        method: "POST",
+        body: data
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.error != undefined){
+            alert(result.error)
+        } else {
+            document.getElementById("customerForm").reset();
+            addRowToTable(result.id, result.name, result.address, result.phone);
+        }
+    })
+    .catch(error => alert("Error:", error));
+}
+
+function deleteItem(id) {
+    fetch(`/api/records/${id}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById(`tr-${id}`).remove()
+    })
+    .catch(error => alert('Error:', error));
+}
+
+function addRowToTable(id, name, address, phone) {
+    const tableBody = document.querySelector("#customers-table tbody");
+
+    const newRow = document.createElement("tr");
+
+    const idCell = document.createElement("td");
+    idCell.textContent = id;
+
+    const nameCell = document.createElement("td");
+    nameCell.textContent = name;
+
+    const addressCell = document.createElement("td");
+    addressCell.textContent = address;
+
+    const phoneCell = document.createElement("td");
+    phoneCell.textContent = phone;
+
+    const actionsCell = document.createElement("td");
+    actionsCell.innerHTML = `<a onclick="deleteItem(${id})" class="btn btn-danger">Delete</a>`;
+
+    newRow.appendChild(idCell);
+    newRow.appendChild(nameCell);
+    newRow.appendChild(addressCell);
+    newRow.appendChild(phoneCell);
+    newRow.appendChild(actionsCell);
+
+    tableBody.appendChild(newRow);
+}
+</script>
+
+
 <%- include('partials/_footer'); -%>
